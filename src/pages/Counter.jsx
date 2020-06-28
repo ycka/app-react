@@ -4,21 +4,38 @@ import { connect } from 'react-redux';
 
 import { plus, plusAsync } from '../actions/counter';
 
+import { eventlogger } from '../decorator/log'
+
+
 
 import style from './style/counter.scss';
 
-class Counter extends React.Component {
+function test(c){
+  return (target) =>{
+    target.a = c
+  }
+}
+
+@connect(
+  select
+)
+export default class Counter extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.isTestable)
+    console.log(Counter.a)
 
     this.state = {
-      plusing: false
+      plusing: false,
     };
+  }
+  componentDidMount(){
+    this.add(2,4)
   }
 
   render() {
     return (
-      <div className={style.counter}>
+      <div className={style.counter}  style={{width:'100%',height:'500px'}}>
         <div className={style.label}>{this.props.counter.value}</div>
 
         <div className={style.tools}>
@@ -37,9 +54,14 @@ class Counter extends React.Component {
       </div>
     );
   }
-
+  @eventlogger('setData','add')
+  add(a, b) {
+    return a + b;
+  }
+  
   handlePlus = e => {
     this.props.dispatch(plus(1));
+    this.add(2,4)
   };
 
   handlePlusAsync = async e => {
@@ -67,4 +89,4 @@ function select(state) {
   };
 }
 
-export default connect(select)(Counter);
+// export default connect(select)(Counter);
